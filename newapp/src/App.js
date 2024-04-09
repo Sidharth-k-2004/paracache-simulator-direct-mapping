@@ -40,15 +40,24 @@ function App() {
     // Calculate tag bits, index bits, and instruction length
     const cacheLines = cacheSize / Math.pow(2, offsetBits);
     
+    // const indexBitsCount = Math.log2(cacheLines);
+    // setIndexBits(indexBitsCount);
+    // console.log(indexBitsCount);
+    // const instructionLengthCount = Math.log2(memorySize);
+    // setInstructionLength(instructionLengthCount);
+    // console.log(instructionLength);
+    // const tagBitsCount = instructionLength - (offsetBits + indexBits);
+    // setTagBits(tagBitsCount);
+    // console.log(tagBitsCount);
+    // const cacheLines = cacheSize / Math.pow(2, offsetBits);
     const indexBitsCount = Math.log2(cacheLines);
     setIndexBits(indexBitsCount);
-    console.log(indexBitsCount);
+
     const instructionLengthCount = Math.log2(memorySize);
     setInstructionLength(instructionLengthCount);
-    console.log(instructionLength);
-    const tagBitsCount = instructionLength - (offsetBits + indexBits);
+
+    const tagBitsCount = instructionLengthCount - indexBitsCount - offsetBits;
     setTagBits(tagBitsCount);
-    console.log(tagBitsCount);
     // Generate cache table
     const newCacheTable = [];
     for (let i = 0; i < cacheLines; i++) {
