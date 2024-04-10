@@ -74,9 +74,18 @@ function App() {
     setTagvalue(tagBits);
     setIndexvalue(indexBits);
   };
+
+
   const handleNext = () => {
+    // Check if there are any data values left to process
+    if (!datavalue) {
+      alert('No more data values to process.');
+      return;
+    }
+  
     const values = datavalue.split(',');
-    const binaryValue = parseInt(values[0]).toString(2);
+    const binaryValue = parseInt(values[0],16).toString(2);
+ 
     const paddedBinaryValue = binaryValue.padStart(instructionLength, '0');
   
     const tag = paddedBinaryValue.slice(0, tagBits);
@@ -86,75 +95,82 @@ function App() {
     setIndexvalue(index);
     setOffsetvalue(offset);
   
-    const cacheLine = cacheTable.find(entry => entry.index === parseInt(index, 2) && entry.valid && entry.tag === tag);
+    const cacheLine = cacheTable.find(
+      (entry) => entry.index === parseInt(index, 2) && entry.valid && entry.tag === tag
+    );
     if (cacheLine) {
       // Cache hit
-      setHitcount(prev => prev + 1);
+      setHitcount((prev) => prev + 1);
       // Update cache entry as most recently used
       cacheLine.data = values[0]; // Store the current value, not the next one
     } else {
       // Cache miss
-      setMisscount(prev => prev + 1);
+      setMisscount((prev) => prev + 1);
       const cacheIndex = parseInt(index, 2);
       const newCacheLine = { index: cacheIndex, valid: true, tag, data: values[0] }; // Store the current value, not the next one
       cacheTable[cacheIndex] = newCacheLine;
     }
-    
-    // Update datavalue state with remaining values
-    values.shift();
-    setdatavalue(values.join(','));
   
-    // Calculate hit rate and miss rate only if totalAccesses is not zero
-    const totalAccesses = hitcount + misscount;
-    if (totalAccesses !== 0) {
-      const hitRate = (hitcount / totalAccesses) * 100;
-      const missRate = (misscount / totalAccesses) * 100;
-      setHitRate(hitRate);
-      setMissRate(missRate);
+    // Update datavalue state with remaining values or reset if all values processed
+    if (values.length > 1) {
+      values.shift();
+      setdatavalue(values.join(','));
+    } else {
+      // Reset datavalue state
+      setdatavalue('');
     }
+  
+    // Calculate hit rate and miss rate
+    const totalAccesses = hitcount + misscount +1 // Add 1 for the current access
+    const hitRate = (hitcount / totalAccesses) * 100;
+    const missRate = (misscount / totalAccesses) * 100;
+    setHitRate(hitRate);
+    setMissRate(missRate);
   };
   
+  // const handleNext = () => {
+  //   const values = datavalue.split(',');
+  //   const binaryValue = parseInt(values[0]).toString(2);
+  //   const paddedBinaryValue = binaryValue.padStart(instructionLength, '0');
   
+  //   const tag = paddedBinaryValue.slice(0, tagBits);
+  //   const index = paddedBinaryValue.slice(tagBits, tagBits + indexBits);
+  //   const offset = paddedBinaryValue.slice(tagBits + indexBits);
+  //   setTagvalue(tag);
+  //   setIndexvalue(index);
+  //   setOffsetvalue(offset);
   
-//   const handleNext = () => {
+  //   const cacheLine = cacheTable.find(entry => entry.index === parseInt(index, 2) && entry.valid && entry.tag === tag);
+  //   if (cacheLine) {
+  //     // Cache hit
+  //     setHitcount(prev => prev + 1);
+  //     // Update cache entry as most recently used
+  //     cacheLine.data = values[0]; // Store the current value, not the next one
+  //   } else {
+  //     // Cache miss
+  //     setMisscount(prev => prev + 1);
+  //     const cacheIndex = parseInt(index, 2);
+  //     const newCacheLine = { index: cacheIndex, valid: true, tag, data: values[0] }; // Store the current value, not the next one
+  //     cacheTable[cacheIndex] = newCacheLine;
+  //   }
     
-//     const values = datavalue.split(',');
-//     console.log(values);
-//     const binaryValue = parseInt(values[0]).toString(2);
-//     const paddedBinaryValue = binaryValue.padStart(instructionLength, '0');
+  //   // Update datavalue state with remaining values
+  //   values.shift();
+  //   setdatavalue(values.join(','));
   
-//     const tag = paddedBinaryValue.slice(0, tagBits);
-//     const index = paddedBinaryValue.slice(tagBits, tagBits + indexBits);
-//     const offset = paddedBinaryValue.slice(tagBits + indexBits);
-//     setTagvalue(tag);
-//     setIndexvalue(index);
-//     setOffsetvalue(offset);
+  //   // Calculate hit rate and miss rate only if totalAccesses is not zero
+  //   const totalAccesses = hitcount + misscount;
+  //   if (totalAccesses !== 0) {
+  //     const hitRate = (hitcount / totalAccesses) * 100;
+  //     const missRate = (misscount / totalAccesses) * 100;
+  //     setHitRate(hitRate);
+  //     setMissRate(missRate);
+  //   }
+  // };
   
-    
+  
+  
 
-//     const cacheLine = cacheTable.find(entry => entry.index === parseInt(index, 2) && entry.valid && entry.tag === tag);
-//   if (cacheLine) {
-//     // Cache hit
-//     setHitcount(prev => prev + 1);
-//  // Update cache entry as most recently used
-//     cacheLine.data = values[0]; // Store the current value, not the next one
-//   } else {
-//     // Cache miss
-//     setMisscount(prev => prev + 1);
-
-//     const cacheIndex = parseInt(index, 2);
-//     const newCacheLine = { index: cacheIndex, valid: true, tag, data: values[0] }; // Store the current value, not the next one
-//     cacheTable[cacheIndex] = newCacheLine;
-//   }
-//   // Update datavalue state with remaining values
-//   values.shift();
-//   setdatavalue(values.join(','));
-//   const totalAccesses = hitcount + misscount;
-//   const hitRate = (hitcount / totalAccesses) * 100;
-//   const missRate = (misscount / totalAccesses) * 100;
-//   setHitRate(hitRate);
-//   setMissRate(missRate);
-//   };
   
 
   return (
@@ -194,6 +210,8 @@ function App() {
         <div>
           <h3>Hit Rate: {hitRate}%</h3>
           <h3>Miss Rate: {missRate}%</h3>
+          <h3>Number of hits: {hitcount}</h3>
+          <h3>Number of misses: {misscount}</h3>
         </div>
       </div>
       <div className="center-panel">
