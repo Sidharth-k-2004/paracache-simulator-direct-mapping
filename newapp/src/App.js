@@ -15,7 +15,10 @@ function App() {
   const [instructionLength, setInstructionLength] = useState('');
   const [datavalue, setdatavalue] = useState('');
   const [missRate, setMissRate] = useState(0);
+  const [misscount, setMisscount] = useState(0);
   const [hitRate, setHitRate] = useState(0);
+  const [hitcount, setHitcount] = useState(0);
+  // const [count,setcount]=useState(0);
 
   const handleReset = () => {
     setCacheSize('');
@@ -28,47 +31,49 @@ function App() {
     setInstructionLength('');
     setMissRate(0);
     setHitRate(0);
+    setCacheTable([]);
+    setHitcount(0);
+    setMisscount(0);
+    // setcount(0);
   };
-
   const handleSubmit = () => {
     // Calculate the number of blocks based on memory size and offset bits
     const numberOfBlocks = memorySize / Math.pow(2, offsetBits);
-
     // Generate memory table
     const newMemoryTable = [];
     for (let i = 0; i < numberOfBlocks; i++) {
-      const startAddress = i * Math.pow(2, offsetBits);
-      const endAddress = startAddress + Math.pow(2, offsetBits) - 1;
-      newMemoryTable.push({ blockNumber: i, startAddress, endAddress });
+      // Generate data for each memory block based on offset bits
+      const blockData = [];
+      for (let j = 0; j < Math.pow(2, offsetBits); j++) {
+        blockData.push(`B. ${i.toString(16).toUpperCase()} W. ${j.toString(16).toUpperCase()}`);
+      }
+      newMemoryTable.push(blockData);
     }
     setMemoryTable(newMemoryTable);
-
+    
+  
     // Calculate tag bits, index bits, and instruction length
     const cacheLines = cacheSize / Math.pow(2, offsetBits);
-
     const indexBitsCount = Math.log2(cacheLines);
     setIndexBits(indexBitsCount);
-
+  
     const instructionLengthCount = Math.log2(memorySize);
     setInstructionLength(instructionLengthCount);
-
+  
     const tagBitsCount = instructionLengthCount - indexBitsCount - offsetBits;
     setTagBits(tagBitsCount);
-
+  
     // Generate cache table
     const newCacheTable = [];
     for (let i = 0; i < cacheLines; i++) {
       newCacheTable.push({ index: i, valid: false, tag: '', data: '' });
     }
+    
     setCacheTable(newCacheTable);
     setOffsetvalue(offsetBits);
     setTagvalue(tagBits);
     setIndexvalue(indexBits);
-
-    // Handle form submission
-    // You can send cacheSize, memorySize, and offsetBits to the backend here
   };
-
   const handleNext = () => {
     const values = datavalue.split(',');
     const binaryValue = parseInt(values[0]).toString(2);
@@ -81,51 +86,75 @@ function App() {
     setIndexvalue(index);
     setOffsetvalue(offset);
   
+    const cacheLine = cacheTable.find(entry => entry.index === parseInt(index, 2) && entry.valid && entry.tag === tag);
+    if (cacheLine) {
+      // Cache hit
+      setHitcount(prev => prev + 1);
+      // Update cache entry as most recently used
+      cacheLine.data = values[0]; // Store the current value, not the next one
+    } else {
+      // Cache miss
+      setMisscount(prev => prev + 1);
+      const cacheIndex = parseInt(index, 2);
+      const newCacheLine = { index: cacheIndex, valid: true, tag, data: values[0] }; // Store the current value, not the next one
+      cacheTable[cacheIndex] = newCacheLine;
+    }
+    
     // Update datavalue state with remaining values
     values.shift();
     setdatavalue(values.join(','));
   
-    // Check if the tag is present in the cache
-    const cacheLine = cacheTable.find(entry => entry.index === index && entry.tag === tag);
-    if (cacheLine) {
-      // Cache hit
-      setHitRate(prev => prev + 1);
-  
-      // Update cache entry as most recently used
-      cacheLine.valid = true;
-      cacheLine.tag = tag;
-      cacheLine.data = values[0]; // Store the current value, not the next one
-      setCacheTable(prevCache => [...prevCache.filter(entry => !(entry.index === index && entry.tag === tag)), cacheLine]);
-    } else {
-      // Cache miss
-      setMissRate(prev => prev + 1);
-  
-      // Find the least recently used cache entry to replace
-      const lruCacheLine = cacheTable.find(entry => !entry.valid) || cacheTable[0];
-  
-      // Replace the least recently used cache entry
-      const newCacheLine = { index, valid: true, tag, data: values[0] }; // Store the current value, not the next one
-      setCacheTable(prevCache => [...prevCache.filter(entry => !(entry.index === lruCacheLine.index && entry.tag === lruCacheLine.tag)), newCacheLine]);
+    // Calculate hit rate and miss rate only if totalAccesses is not zero
+    const totalAccesses = hitcount + misscount;
+    if (totalAccesses !== 0) {
+      const hitRate = (hitcount / totalAccesses) * 100;
+      const missRate = (misscount / totalAccesses) * 100;
+      setHitRate(hitRate);
+      setMissRate(missRate);
     }
-  
-    // Send values to Flask backend along with hit rate and miss rate
-    fetch('http://localhost:5000/send_data', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ data: values, missRate, hitRate }),
-    })
-      .then(response => response.json())
-      .then(data => {
-        // Handle response if needed
-        console.log('Response from Flask backend:', data);
-      })
-      .catch(error => {
-        // Handle error
-        console.error('Error:', error);
-      });
   };
+  
+  
+  
+//   const handleNext = () => {
+    
+//     const values = datavalue.split(',');
+//     console.log(values);
+//     const binaryValue = parseInt(values[0]).toString(2);
+//     const paddedBinaryValue = binaryValue.padStart(instructionLength, '0');
+  
+//     const tag = paddedBinaryValue.slice(0, tagBits);
+//     const index = paddedBinaryValue.slice(tagBits, tagBits + indexBits);
+//     const offset = paddedBinaryValue.slice(tagBits + indexBits);
+//     setTagvalue(tag);
+//     setIndexvalue(index);
+//     setOffsetvalue(offset);
+  
+    
+
+//     const cacheLine = cacheTable.find(entry => entry.index === parseInt(index, 2) && entry.valid && entry.tag === tag);
+//   if (cacheLine) {
+//     // Cache hit
+//     setHitcount(prev => prev + 1);
+//  // Update cache entry as most recently used
+//     cacheLine.data = values[0]; // Store the current value, not the next one
+//   } else {
+//     // Cache miss
+//     setMisscount(prev => prev + 1);
+
+//     const cacheIndex = parseInt(index, 2);
+//     const newCacheLine = { index: cacheIndex, valid: true, tag, data: values[0] }; // Store the current value, not the next one
+//     cacheTable[cacheIndex] = newCacheLine;
+//   }
+//   // Update datavalue state with remaining values
+//   values.shift();
+//   setdatavalue(values.join(','));
+//   const totalAccesses = hitcount + misscount;
+//   const hitRate = (hitcount / totalAccesses) * 100;
+//   const missRate = (misscount / totalAccesses) * 100;
+//   setHitRate(hitRate);
+//   setMissRate(missRate);
+//   };
   
 
   return (
@@ -210,27 +239,18 @@ function App() {
         </div>
       </div>
       <div className="right-panel">
+       <div className="memory-block-container">
         <div className="memory-block-section">
-          <h2>Memory Block Table</h2>
-          <table>
-            <thead>
-              <tr>
-                <th>Block Number</th>
-                <th>Start Address</th>
-                <th>End Address</th>
-              </tr>
-            </thead>
-            <tbody>
-              {memoryTable.map((block) => (
-                <tr key={block.blockNumber}>
-                  <td>{block.blockNumber}</td>
-                  <td>{block.startAddress}</td>
-                  <td>{block.endAddress}</td>
-                </tr>
+              <h2>Memory segment</h2>
+          {memoryTable.map((blockData, index) => (
+            <div key={index}>
+              {blockData.map((data) => (
+                <span key={data}>{data}&nbsp;&nbsp;&nbsp;</span>
               ))}
-            </tbody>
-          </table>
+            </div>
+          ))}
         </div>
+      </div>
       </div>
     </div>
   );

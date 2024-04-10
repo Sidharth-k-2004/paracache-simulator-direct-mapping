@@ -68,3 +68,99 @@
   text-align: left;
 }
 
+.cache-table table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.cache-table th, .cache-table td {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+.cache-table th {
+  background-color: #f2f2f2;
+}
+
+.cache-table td table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.cache-table td table td {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 4px;
+}
+.instruction-section {
+  margin-top: 20px;
+}
+
+.instruction-section table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.instruction-section th, .instruction-section td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+}
+
+.instruction-section th {
+  background-color: #f2f2f2;
+}
+
+.instruction-section td {
+  font-size: 16px;
+}
+
+.instruction-section .instruction-header {
+  font-weight: bold;
+}
+
+.instruction-section .instruction-value {
+  font-style: italic;
+}
+.memory-block-section {
+  margin-top: 20px;
+}
+
+.memory-block-section div {
+  margin-bottom: 10px;
+}
+
+.memory-block-section span {
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  margin-right: 5px;
+}
+
+.memory-block-section span:last-child {
+  margin-right: 0;
+}
+
+.memory-block-container {
+  overflow-x: auto;
+}
+
+.memory-block-section {
+  margin-top: 20px;
+  white-space: nowrap;
+  display: inline-block;
+}
+
+.memory-block-section span {
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  margin-right: 5px;
+}
+
+.memory-block-section span:last-child {
+  margin-right: 0;
+}
+
+.memory-block-section span:nth-child(odd) {
+  background-color: #f2f2f2;
+}
