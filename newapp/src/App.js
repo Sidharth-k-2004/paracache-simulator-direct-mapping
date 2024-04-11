@@ -135,51 +135,6 @@ function App() {
     setMissRate(missRate);
   };
   
-  // const handleNext = () => {
-  //   const values = datavalue.split(',');
-  //   const binaryValue = parseInt(values[0]).toString(2);
-  //   const paddedBinaryValue = binaryValue.padStart(instructionLength, '0');
-  
-  //   const tag = paddedBinaryValue.slice(0, tagBits);
-  //   const index = paddedBinaryValue.slice(tagBits, tagBits + indexBits);
-  //   const offset = paddedBinaryValue.slice(tagBits + indexBits);
-  //   setTagvalue(tag);
-  //   setIndexvalue(index);
-  //   setOffsetvalue(offset);
-  
-  //   const cacheLine = cacheTable.find(entry => entry.index === parseInt(index, 2) && entry.valid && entry.tag === tag);
-  //   if (cacheLine) {
-  //     // Cache hit
-  //     setHitcount(prev => prev + 1);
-  //     // Update cache entry as most recently used
-  //     cacheLine.data = values[0]; // Store the current value, not the next one
-  //   } else {
-  //     // Cache miss
-  //     setMisscount(prev => prev + 1);
-  //     const cacheIndex = parseInt(index, 2);
-  //     const newCacheLine = { index: cacheIndex, valid: true, tag, data: values[0] }; // Store the current value, not the next one
-  //     cacheTable[cacheIndex] = newCacheLine;
-  //   }
-    
-  //   // Update datavalue state with remaining values
-  //   values.shift();
-  //   setdatavalue(values.join(','));
-  
-  //   // Calculate hit rate and miss rate only if totalAccesses is not zero
-  //   const totalAccesses = hitcount + misscount;
-  //   if (totalAccesses !== 0) {
-  //     const hitRate = (hitcount / totalAccesses) * 100;
-  //     const missRate = (misscount / totalAccesses) * 100;
-  //     setHitRate(hitRate);
-  //     setMissRate(missRate);
-  //   }
-  // };
-  
-  
-  
-
-  
-
   return (
     <div className="container">
       <div className="left-panel">
@@ -203,25 +158,36 @@ function App() {
             onChange={(e) => setOffsetBits(e.target.value)}
           />
           <button onClick={handleReset}>Reset</button>
-          <button onClick={handleSubmit}>Submit</button>
+          <button className="button" onClick={handleSubmit}>Submit</button>
         </div>
         <div className="input-section">
           <input
             type="text"
-            placeholder="data values"
+            placeholder="Data Values (Comma-separated)"
             value={datavalue}
             onChange={(e) => setdatavalue(e.target.value)}
           />
           <button onClick={handleNext}>Next</button>
         </div>
         <div>
-          <h3>Hit Rate: {hitRate}%</h3>
-          <h3>Miss Rate: {missRate}%</h3>
-          <h3>Number of hits: {hitcount}</h3>
-          <h3>Number of misses: {misscount}</h3>
+          <h3 className="hit">Hit Rate: {hitRate}%</h3>
+          <h3 className="miss">Miss Rate: {missRate}%</h3>
+          <h3 className="hitno">Number of hits: {hitcount}</h3>
+          <h3 className="missno">Number of misses: {misscount}</h3>
         </div>
       </div>
       <div className="center-panel">
+        <div className="header">
+          
+          <div className="simulator-section">
+            <h2>CACHE SIMULATOR</h2>
+            {/* Instruction breakdown and cache table */}
+          </div>
+          <div className="direct-mapped-section">
+            <h2>Direct Mapping Technique</h2>
+            {/* Instructions specific to direct mapping */}
+          </div>
+        </div>
         <div className="instruction-section">
           <h2>Instruction Breakdown</h2>
           <table>
@@ -264,18 +230,18 @@ function App() {
         </div>
       </div>
       <div className="right-panel">
-       <div className="memory-block-container">
-        <div className="memory-block-section">
-              <h2>Memory segment</h2>
-          {memoryTable.map((blockData, index) => (
-            <div key={index}>
-              {blockData.map((data) => (
-                <span key={data}>{data}&nbsp;&nbsp;&nbsp;</span>
-              ))}
-            </div>
-          ))}
+        <div className="memory-block-container">
+          <div className="memory-block-section">
+            <h2>Memory Segment</h2>
+            {memoryTable.map((blockData, index) => (
+              <div key={index}>
+                {blockData.map((data, subIndex) => (
+                  <span key={`${index}-${subIndex}`}>{data}&nbsp;&nbsp;&nbsp;</span>
+                ))}
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
       </div>
     </div>
   );
