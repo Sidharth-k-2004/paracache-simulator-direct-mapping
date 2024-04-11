@@ -18,7 +18,7 @@ function App() {
   const [misscount, setMisscount] = useState(0);
   const [hitRate, setHitRate] = useState(0);
   const [hitcount, setHitcount] = useState(0);
-  // const [count,setcount]=useState(0);
+  const [count,setcount]=useState(0);
 
   const handleReset = () => {
     setCacheSize('');
@@ -34,7 +34,7 @@ function App() {
     setCacheTable([]);
     setHitcount(0);
     setMisscount(0);
-    // setcount(0);
+    setcount(0);
   };
   const handleSubmit = () => {
     // Calculate the number of blocks based on memory size and offset bits
@@ -78,6 +78,8 @@ function App() {
 
   const handleNext = () => {
     // Check if there are any data values left to process
+    var miss=misscount;
+    var hit=hitcount;
     if (!datavalue) {
       alert('No more data values to process.');
       return;
@@ -87,7 +89,7 @@ function App() {
     const binaryValue = parseInt(values[0],16).toString(2);
  
     const paddedBinaryValue = binaryValue.padStart(instructionLength, '0');
-  
+    setcount((prev)=>prev+1);
     const tag = paddedBinaryValue.slice(0, tagBits);
     const index = paddedBinaryValue.slice(tagBits, tagBits + indexBits);
     const offset = paddedBinaryValue.slice(tagBits + indexBits);
@@ -100,11 +102,13 @@ function App() {
     );
     if (cacheLine) {
       // Cache hit
+      hit=hitcount+1;
       setHitcount((prev) => prev + 1);
       // Update cache entry as most recently used
       cacheLine.data = values[0]; // Store the current value, not the next one
     } else {
       // Cache miss
+      miss=misscount+1;
       setMisscount((prev) => prev + 1);
       const cacheIndex = parseInt(index, 2);
       const newCacheLine = { index: cacheIndex, valid: true, tag, data: values[0] }; // Store the current value, not the next one
@@ -121,9 +125,12 @@ function App() {
     }
   
     // Calculate hit rate and miss rate
-    const totalAccesses = hitcount + misscount +1 // Add 1 for the current access
-    const hitRate = (hitcount / totalAccesses) * 100;
-    const missRate = (misscount / totalAccesses) * 100;
+    const totalAccesses = count+1// Add 1 for the current access
+    console.log(hit);
+    console.log(miss);
+    console.log(totalAccesses);
+    const hitRate = (hit / totalAccesses) * 100;
+    const missRate = (miss / totalAccesses) * 100;
     setHitRate(hitRate);
     setMissRate(missRate);
   };
