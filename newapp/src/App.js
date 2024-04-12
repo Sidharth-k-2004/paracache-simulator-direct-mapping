@@ -138,7 +138,7 @@ function App() {
   return (
     <div className="container">
       <div className="left-panel">
-        <div className="input-section">
+        <div className="input-section" >
           <input
             type="text"
             placeholder="Cache Size"
@@ -157,7 +157,7 @@ function App() {
             value={offsetBits}
             onChange={(e) => setOffsetBits(e.target.value)}
           />
-          <button onClick={handleReset}>Reset</button>
+          <button className="button" onClick={handleReset}>Reset</button>
           <button className="button" onClick={handleSubmit}>Submit</button>
         </div>
         <div className="input-section">
@@ -167,7 +167,7 @@ function App() {
             value={datavalue}
             onChange={(e) => setdatavalue(e.target.value)}
           />
-          <button onClick={handleNext}>Next</button>
+          <button className="button" onClick={handleNext}>Next</button>
         </div>
         <div>
           <h3 className="hit">Hit Rate: {hitRate}%</h3>
@@ -233,6 +233,8 @@ function App() {
         <div className="memory-block-container">
           <div className="memory-block-section">
             <h2>Memory Segment</h2>
+            <div className='memtable'>
+
             {memoryTable.map((blockData, index) => (
               <div key={index}>
                 {blockData.map((data, subIndex) => (
@@ -240,6 +242,7 @@ function App() {
                 ))}
               </div>
             ))}
+            </div>
           </div>
         </div>
       </div>

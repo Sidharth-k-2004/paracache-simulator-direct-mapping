@@ -4,11 +4,11 @@
   border:solid;
   border-width: 2px;
   border-radius: 10px;
-  background-color: #f3e9f3;
+  background-color: #e1fcf9;
 }
 
 .header {
-  border: solid 2px;
+  border: 4px solid #10b981;
   border-width: 1px;
   border-spacing: 20px;
   margin-left:-340px;
@@ -16,11 +16,13 @@
   border-radius: 20px;
   background-color: #f6f6f7f2;
   margin-top: -5px;
+  background-color: #ccffeb;
 }
 .simulator-section {
   margin-left: 550px;
   flex: 1;
   flex-direction: column;
+  font-family: 'Montserrat', sans-serif;
 }
 
 .direct-mapped-section {
@@ -28,6 +30,7 @@
   margin-top: 7px;
   flex: 1;
   flex-direction: column;
+  font-family: 'Roboto', sans-serif;
 }
 
 .left-panel {
@@ -55,6 +58,9 @@
 
 .input-section {
   margin-bottom: 20px;
+  border: 4px dotted #e1fcf9;
+ 
+  background-color: #ccffeb;
 }
 
 .input-section input {
@@ -62,12 +68,16 @@
   margin-bottom: 10px;
   padding: 8px;
   box-sizing: border-box;
+  
+  background-color: #ffffff;
+  border: 1px solid #10b981;
 }
 
 .input-section button {
   width: 48%;
   padding: 8px;
   cursor: pointer;
+  
 }
 
 .instruction-section {
@@ -77,19 +87,19 @@
 }
 
 .hit {
-  color: green;
+  color: rgb(103, 178, 103);
 }
 
 .miss {
-  color: red;
+  color: rgb(226, 113, 113);
 }
 
 .hitno {
-  color:green;
+  color:rgb(103, 178, 103);
 }
 
 .missno {
-  color: red;
+  color: rgb(226, 113, 113);
 }
 
 
@@ -111,24 +121,28 @@
 }
 
 .cache-table {
+  
   height: 400px;
-  border: 1px solid #ccc;
+  /* border: 2px solid #10b981; */
   padding: 10px;
   overflow: auto;
 }
 .cache-table table {
+  background-color:#ccffeb;
   border-collapse: collapse;
   width: 100%;
+  border: 2px solid #10b981;
 }
 
 .cache-table th, .cache-table td {
-  border: 1px solid #dddddd;
+  border: 1px solid #10b981;
   text-align: left;
   padding: 8px;
+  background-color: #ffffff;
 }
 
 .cache-table th {
-  background-color: #f2f2f2;
+  background-color:#10b981;
 }
 
 .cache-table td table {
@@ -137,17 +151,21 @@
 }
 
 .cache-table td table td {
-  border: 1px solid #dddddd;
+  border: 1px solid #10b981;
   text-align: left;
   padding: 4px;
 }
 .instruction-section {
   margin-top: 20px;
+  border: 4px dotted #ccffeb;
 }
 
 .instruction-section table {
   width: 100%;
   border-collapse: collapse;
+  background-color:  #ccffeb;
+  border: 2px solid #10b981;
+
 }
 
 .instruction-section th, .instruction-section td {
@@ -157,7 +175,7 @@
 }
 
 .instruction-section th {
-  background-color: #f2f2f2;
+  background-color: #10b981;
 }
 
 .instruction-section td {
@@ -197,19 +215,31 @@
   margin-top: 20px;
   white-space: nowrap;
   display: inline-block;
+  border: 2px solid #10b981;
 }
 
 .memory-block-section span {
   padding: 5px 10px;
-  border: 1px solid #ccc;
+  border: 1px solid #10b981;
   margin-right: 5px;
 }
 
 .memory-block-section span:last-child {
   margin-right: 0;
 }
+/* .memtable {
+  border: 2px solid #10b981;
+} */
 
 .memory-block-section span:nth-child(odd) {
-  background-color: #f2f2f2;
+  background-color: #ccffeb;
 }
-
+.memory-block-section span:nth-child(even) {
+  
+  background-color: #ffffff;
+}
+.button{
+  background-color: #10b981;
+  
+  border: 1px dotted #e1fcf9;
+}
